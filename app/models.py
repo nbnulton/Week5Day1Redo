@@ -7,11 +7,12 @@ from app import login
       # table name  
 class User(UserMixin, db.Model):
     # columns
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(150))
     last_name = db. Column(db.String(150))
-    email = db.Column(db.String(200), unique=True)
+    email = db.Column(db.String(200), unique=True, index=True)
     password = db.Column(db.String(200))
+    icon = db.Column(db.Integer)
     created_on = db.Column(db.DateTime, default=dt.utcnow)
 
     def __repr__(self):
@@ -21,6 +22,7 @@ class User(UserMixin, db.Model):
         self.first_name = data['first_name']
         self.last_name = data['last_name']
         self.email = data['email']
+        self.icon = data['icon']
         self.password = self.hash_password(data['password'])
 
     def hash_password(self, original_password):
@@ -34,7 +36,8 @@ class User(UserMixin, db.Model):
         db.session.add(self) # adds the user to the db session
         db.session.commit() # save everything in the session to the database
 
-
+    def get_icon_url(self):
+        return f'https://avatars.dicebear.com/api/gridy/{self.icon}.svg'
 
 @login.user_loader
 def load_user(id):

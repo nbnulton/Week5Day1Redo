@@ -4,11 +4,25 @@ Register
 {% endblock %}
 
 {% block content %}
-<h1>Register</h1>
+<h1>
+{% if current_user.is_authenticated %}
+    Edit Profile
+{% else %}
+    Register
+{% endif %}
+</h1>
 
 <small style="color:red;">{{error}}</small>
-<form action="{{url_for('register')}}" method="POST">
+<form action="{{url_for('auth.edit_profile') if current_user.is_authenticated else url_for('auth.register')}}" method="POST">
 {{ form.hiddent_tag }}
+
+{# avatar #}
+{{form.icon.label}}<br>
+{% for subfield in form.icon %}
+    {{subfield}}
+    {{subfield.label | safe}}
+{% endfor %}
+<br>
 
 {# first #}
 {{form.first_name.label(class="form-label")}}
@@ -41,7 +55,7 @@ Register
 {% endfor %}
 
 {# submit button #}
-{{form.submit(class='btn btn-primary')}}
+{{form.submit(class='btn btn-primary', "color:#FF0000;")}}
 
 
 </form>
